@@ -9,7 +9,7 @@ const USERS = [
 const typeDefs = resolve(__dirname, "schema.graphql");
 const resolvers = {
   Query: {
-    users: async () => USERS
+    users: (): typeof USERS => USERS
   },
   Mutation: {
     createUser: async (parent, { data }, ctx, info) => {
