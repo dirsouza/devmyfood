@@ -1,8 +1,8 @@
 version: "3.4"
 
 services:
-  api:
-    container_name: api
+  node:
+    container_name: node
     build:
       context: ./api
       dockerfile: Dockerfile
