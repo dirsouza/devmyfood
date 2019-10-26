@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "graphql-yoga": "^1.18.3",
-    "mongoose": "^5.7.0"
+    "mongoose": ">=5.7.5"
   }
 }
