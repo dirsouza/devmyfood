@@ -28,6 +28,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
+    "graphql-import": "^0.7.1",
     "graphql-yoga": "^1.18.3",
     "mongoose": ">=5.7.5"
   }
