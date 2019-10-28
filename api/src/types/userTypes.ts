@@ -12,3 +12,16 @@ export interface User extends Document {
   password: string
   role: UserRole
 }
+
+interface UserSignInData {
+  email: string
+  password: string
+}
+
+export interface UserSignUpInput {
+  data: UserSignInData & { name: string }
+}
+
+export interface UserSignInInput {
+  data: UserSignInData
+}

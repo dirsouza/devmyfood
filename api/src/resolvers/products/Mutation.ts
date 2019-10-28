@@ -9,9 +9,8 @@ import { checkExistence } from '../../utils'
 export const createProduct: Resolver<ProductCreateInput> = (
   _,
   { data },
-  { models },
+  { models: { Product } },
 ) => {
-  const { Product } = models
   const product = new Product(data)
   return product.save()
 }

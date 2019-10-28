@@ -9,9 +9,8 @@ export const catchErrorsMiddleware: IMiddlewareResolver<any, Context> = async (
   try {
     return await resolver(...args)
   } catch (error) {
+    console.log(error)
     if (error instanceof CustomError) throw error
-    console.log(`Error: ${error}`)
-
     throw new CustomError('Internal Server Error', 'INTERNAL_SERVER_ERROR')
   }
 }
