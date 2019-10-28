@@ -18,10 +18,10 @@ interface UserSignInData {
   password: string
 }
 
-export interface UserSignUpInput {
-  data: UserSignInData & { name: string }
-}
-
 export interface UserSignInInput {
   data: UserSignInData
+}
+
+export interface UserSignUpInput {
+  data: UserSignInData & { name: string }
 }

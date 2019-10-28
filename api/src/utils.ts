@@ -1,8 +1,7 @@
 import { Types } from 'mongoose'
-import { CheckExistenceOptions } from './types'
+import { CheckExistenceOptions, TokenPayload } from './types'
 import { CustomError } from './errors'
-
-export const isMongoId = (_id: string): boolean => Types.ObjectId.isValid(_id)
+import { SignOptions, sign } from 'jsonwebtoken'
 
 export const checkExistence = async ({
   model,
@@ -28,3 +27,14 @@ export const checkExistence = async ({
 
   return exists
 }
+
+export const isMongoId = (_id: string): boolean => Types.ObjectId.isValid(_id)
+
+export const issueToken = (
+  payload: TokenPayload,
+  options?: SignOptions,
+): string =>
+  sign(payload, process.env.JWT_SECRET || 'iRgef*jA6^R5', {
+    expiresIn: '2h',
+    ...options,
+  })
