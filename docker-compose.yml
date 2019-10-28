@@ -7,13 +7,15 @@ services:
       context: ./api
       dockerfile: Dockerfile
     environment:
-      JWT_SECRET:
-      MONGO_URI:
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
   mongo:
     container_name: mongo
     image: mongo:4
     ports:
       - "27017:27017"
+    volumes:
+      - ./.docker/mongo/data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME:
-      MONGO_INITDB_ROOT_PASSWORD:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
