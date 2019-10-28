@@ -13,6 +13,11 @@ export interface User extends Document {
   role: UserRole
 }
 
+export interface AuthUser {
+  _id: Schema.Types.ObjectId
+  role: UserRole
+}
+
 interface UserSignInData {
   email: string
   password: string

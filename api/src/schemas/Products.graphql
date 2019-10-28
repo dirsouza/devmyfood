@@ -28,12 +28,12 @@ input ProductUpdateInput {
 }
 
 type Query {
-  products: [Product!]!
-  product(_id: ID!): Product!
+  products: [Product!]! @auth
+  product(_id: ID!): Product! @auth(role: ADMIN)
 }
 
 type Mutation {
-  createProduct(data: ProductCreateInput!): Product!
-  updateProduct(_id: ID!, data: ProductUpdateInput!): Product!
-  deleteProduct(_id: ID!): Product!
+  createProduct(data: ProductCreateInput!): Product! @auth
+  updateProduct(_id: ID!, data: ProductUpdateInput!): Product! @auth
+  deleteProduct(_id: ID!): Product! @auth
 }
