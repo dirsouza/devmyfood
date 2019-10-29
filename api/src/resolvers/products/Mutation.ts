@@ -3,8 +3,9 @@ import {
   ProductCreateInput,
   ProductUpdateInput,
   ProductByIdInput,
+  Product,
 } from '../../types'
-import { checkExistence } from '../../utils'
+import { findDocument } from '../../utils'
 
 export const createProduct: Resolver<ProductCreateInput> = (
   _,
@@ -20,16 +21,15 @@ export const updateProduct: Resolver<ProductUpdateInput> = async (
   { _id, data },
   { models },
 ) => {
-  const { Product } = models
-
-  await checkExistence({
+  const product = await findDocument<Product>({
     model: 'Product',
     models,
     field: '_id',
     value: _id,
   })
 
-  return Product.findByIdAndUpdate(_id, data, { new: true })
+  Object.keys(data).forEach(prop => (product[prop] = data[prop]))
+  return product.save()
 }
 
 export const deleteProduct: Resolver<ProductByIdInput> = async (
@@ -37,14 +37,12 @@ export const deleteProduct: Resolver<ProductByIdInput> = async (
   { _id },
   { models },
 ) => {
-  const { Product } = models
-
-  await checkExistence({
+  const product = await findDocument<Product>({
     model: 'Product',
     models,
     field: '_id',
     value: _id,
   })
 
-  return Product.findByIdAndDelete(_id)
+  return product.remove()
 }

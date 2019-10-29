@@ -1,5 +1,5 @@
-import { Document, Schema, Types } from 'mongoose'
-import { User, OrderItem } from '.'
+import { Document, Types } from 'mongoose'
+import { User, OrderItem, OrderItemCreateInput, OrderItemUpdateInput } from '.'
 
 export enum OrderStatus {
   WAITING_PAYMENT,
@@ -11,11 +11,38 @@ export enum OrderStatus {
 }
 
 export interface Order extends Document {
-  _id: Schema.Types.ObjectId
-  user: User
+  _id: Types.ObjectId
+  user: User | Types.ObjectId
   total: number
   status: OrderStatus
   items: Types.DocumentArray<OrderItem>
   createdAt: string
   updatedAt: string
+}
+
+export interface OrderByIdInput {
+  _id: string
+}
+
+type OrderCreateInput = Pick<Order, 'status' | 'user'>
+
+interface OrderUpdateInput extends OrderCreateInput {
+  itemsToAdd: OrderItemCreateInput[]
+  itemsToUpdate: OrderItemUpdateInput[]
+  itemsToDelete: string[]
+}
+
+export interface OrderCreateArgs {
+  data: OrderCreateInput & {
+    items: OrderItemCreateInput[]
+  }
+}
+
+export interface OrderDeleteArgs {
+  _id: string
+}
+
+export interface OrderUpdateArgs {
+  _id: string
+  data: OrderUpdateInput
 }

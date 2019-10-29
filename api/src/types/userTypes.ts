@@ -1,12 +1,12 @@
-import { Document, Schema } from 'mongoose'
+import { Document, Types } from 'mongoose'
 
 export enum UserRole {
-  USER,
-  ADMIN,
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
 export interface User extends Document {
-  _id: Schema.Types.ObjectId
+  _id: Types.ObjectId
   name: string
   email: string
   password: string
@@ -14,7 +14,7 @@ export interface User extends Document {
 }
 
 export interface AuthUser {
-  _id: Schema.Types.ObjectId
+  _id: Types.ObjectId
   role: UserRole
 }
 

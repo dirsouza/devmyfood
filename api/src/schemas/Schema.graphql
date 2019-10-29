@@ -2,5 +2,5 @@
 # import * from 'Scalar.graphql'
 # import Mutation.* from 'User.graphql'
 # import Query.*, Mutation.* from 'Products.graphql'
-# import Query.* from 'Order.graphql'
+# import Mutation.*, Query.* from 'Order.graphql'
 # import * from 'OrderItem.graphql'

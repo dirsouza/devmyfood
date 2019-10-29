@@ -17,6 +17,27 @@ enum OrderStatus {
   DELIVERED
 }
 
+input OrderCreateInput {
+  status: OrderStatus
+  user: ID
+  items: [OrderItemCreateInput!]
+}
+
+input OrderUpdateInput {
+  status: OrderStatus
+  user: ID
+  itemsToAdd: [OrderItemCreateInput!]
+  itemsToUpdate: [OrderItemUpdateInput!]
+  itemsToDelete: [ID!]
+}
+
 type Query {
-  orders: Order!
+  orders: [Order!]! @auth
+  order(_id: ID!): Order! @auth
+}
+
+type Mutation {
+  createOrder(data: OrderCreateInput!): Order! @auth
+  updateOrder(_id: ID!, data: OrderUpdateInput!): Order! @auth
+  deleteOrder(_id: ID!): Order! @auth
 }

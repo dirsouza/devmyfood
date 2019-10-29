@@ -6,3 +6,16 @@ type OrderItem {
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+input OrderItemCreateInput {
+  product: ID!
+  quantity: Float!
+  total: Float!
+}
+
+input OrderItemUpdateInput {
+  _id: ID!
+  product: ID!
+  quantity: Float!
+  total: Float!
+}
