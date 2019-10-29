@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import {
   Resolver,
   OrderCreateArgs,
@@ -6,7 +7,7 @@ import {
   Order,
   OrderUpdateArgs,
 } from '../../types'
-import { findDocument } from '../../utils'
+import { findDocument, findOrderItem } from '../../utils'
 
 export const createOrder: Resolver<OrderCreateArgs> = async (
   _,
@@ -14,7 +15,8 @@ export const createOrder: Resolver<OrderCreateArgs> = async (
   { models: { Order }, authUser: { _id, role } },
 ) => {
   const user = role === UserRole.USER ? _id : data.user || _id
-  const total = (data.items && data.items.reduce((sum, item) => sum + item.total, 0)) || 0
+  const total =
+    (data.items && data.items.reduce((sum, item) => sum + item.total, 0)) || 0
 
   return await new Order({
     ...data,
@@ -37,12 +39,43 @@ export const updateOrder: Resolver<OrderUpdateArgs> = async (
     value: _id,
     where,
   })
-
   const user = !isAdmin ? userId : data.user || order.user
+  const {
+    itemsToUpdate = [],
+    itemsToDelete = [],
+    itemsToAdd = [],
+    status,
+  } = data
 
-  order.user = user
+  itemsToUpdate
+    .map(orderItem => findOrderItem(orderItem._id, order.items, 'update'))
+    .forEach((orderItem, index) => orderItem.set(itemsToUpdate[index]))
 
-  return order.save()
+  itemsToDelete
+    .map(orderItemId => findOrderItem(orderItemId, order.items, 'delete'))
+    .forEach(orderItem => orderItem.remove())
+
+  itemsToAdd.forEach(itemToAdd => {
+    const foundItem = order.items.find(item =>
+      (item.product as Types.ObjectId).equals(itemToAdd.product),
+    )
+
+    if (foundItem)
+      return foundItem.set({
+        quantity: foundItem.quantity + itemToAdd.quantity,
+        total: foundItem.total + itemToAdd.total,
+      })
+
+    order.items.push(itemToAdd)
+  })
+
+  return order
+    .set({
+      user,
+      status: status || order.status,
+      total: order.items.reduce((sum, item) => sum + item.total, 0),
+    })
+    .save()
 }
 
 export const deleteOrder: Resolver<OrderDeleteArgs> = async (
