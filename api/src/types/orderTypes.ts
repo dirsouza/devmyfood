@@ -20,7 +20,7 @@ export interface Order extends Document {
   updatedAt: string
 }
 
-export interface OrderByIdInput {
+export interface OrderByIdArgs {
   _id: string
 }
 

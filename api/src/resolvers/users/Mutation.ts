@@ -1,9 +1,9 @@
 import { hash, compare } from 'bcryptjs'
-import { Resolver, UserSignInInput, UserSignUpInput } from '../../types'
+import { Resolver, UserSignInArgs, UserSignUpArgs } from '../../types'
 import { CustomError } from '../../errors'
 import { issueToken } from '../../utils'
 
-export const signin: Resolver<UserSignInInput> = async (
+export const signin: Resolver<UserSignInArgs> = async (
   _,
   { data: { email, password } },
   { models: { User } },
@@ -24,7 +24,7 @@ export const signin: Resolver<UserSignInInput> = async (
   return { token, user }
 }
 
-export const signup: Resolver<UserSignUpInput> = async (
+export const signup: Resolver<UserSignUpArgs> = async (
   _,
   { data },
   { models: { User } },

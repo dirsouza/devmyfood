@@ -9,12 +9,12 @@ export interface Product extends Document {
   unit: string
 }
 
-export interface ProductCreateInput {
+export interface ProductCreateArgs {
   data: OmitId<Product>
 }
 
-export interface ProductUpdateInput extends ProductByIdInput, ProductCreateInput {}
+export interface ProductUpdateArgs extends ProductByIdArgs, ProductCreateArgs {}
 
-export interface ProductByIdInput {
+export interface ProductByIdArgs {
   _id: string
 }

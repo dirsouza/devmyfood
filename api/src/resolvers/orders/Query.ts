@@ -1,4 +1,4 @@
-import { Resolver, UserRole, OrderByIdInput, Order } from '../../types'
+import { Resolver, UserRole, OrderByIdArgs, Order } from '../../types'
 import { findDocument } from '../../utils'
 
 export const orders: Resolver<{}> = (
@@ -11,7 +11,7 @@ export const orders: Resolver<{}> = (
   return Order.find(conditions)
 }
 
-export const order: Resolver<OrderByIdInput> = (
+export const order: Resolver<OrderByIdArgs> = (
   _,
   { _id },
   { models, authUser: { _id: userId, role } },

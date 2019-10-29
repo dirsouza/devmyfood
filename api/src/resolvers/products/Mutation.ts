@@ -1,13 +1,13 @@
 import {
   Resolver,
-  ProductCreateInput,
-  ProductUpdateInput,
-  ProductByIdInput,
+  ProductCreateArgs,
+  ProductUpdateArgs,
+  ProductByIdArgs,
   Product,
 } from '../../types'
 import { findDocument } from '../../utils'
 
-export const createProduct: Resolver<ProductCreateInput> = (
+export const createProduct: Resolver<ProductCreateArgs> = (
   _,
   { data },
   { models: { Product } },
@@ -16,7 +16,7 @@ export const createProduct: Resolver<ProductCreateInput> = (
   return product.save()
 }
 
-export const updateProduct: Resolver<ProductUpdateInput> = async (
+export const updateProduct: Resolver<ProductUpdateArgs> = async (
   _,
   { _id, data },
   { models },
@@ -32,7 +32,7 @@ export const updateProduct: Resolver<ProductUpdateInput> = async (
   return product.save()
 }
 
-export const deleteProduct: Resolver<ProductByIdInput> = async (
+export const deleteProduct: Resolver<ProductByIdArgs> = async (
   _,
   { _id },
   { models },

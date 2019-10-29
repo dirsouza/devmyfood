@@ -18,15 +18,15 @@ export interface AuthUser {
   role: UserRole
 }
 
-interface UserSignInData {
+interface UserSignInInput {
   email: string
   password: string
 }
 
-export interface UserSignInInput {
-  data: UserSignInData
+export interface UserSignInArgs {
+  data: UserSignInInput
 }
 
-export interface UserSignUpInput {
-  data: UserSignInData & { name: string }
+export interface UserSignUpArgs {
+  data: UserSignInInput & { name: string }
 }
