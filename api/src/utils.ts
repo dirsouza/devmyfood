@@ -1,5 +1,10 @@
-import { Document, Model, Types } from 'mongoose'
-import { FindDocumentOptions, TokenPayload, OrderItem } from './types'
+import { Document, Model, Types, DocumentQuery } from 'mongoose'
+import {
+  FindDocumentOptions,
+  TokenPayload,
+  OrderItem,
+  PaginationArgs,
+} from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
 
@@ -61,4 +66,11 @@ export const findOrderItem = (
     )
 
   return item
+}
+
+export const paginationAndSort = <T extends Document>(
+  query: DocumentQuery<T[], T>,
+  { skip = 0, limit = 10 }: PaginationArgs,
+): DocumentQuery<T[], T> => {
+  return query.skip(skip).limit(limit <= 20 ? limit : 20)
 }

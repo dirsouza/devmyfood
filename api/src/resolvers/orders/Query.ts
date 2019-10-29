@@ -5,18 +5,16 @@ import {
   Order,
   PaginationArgs,
 } from '../../types'
-import { findDocument } from '../../utils'
+import { findDocument, paginationAndSort } from '../../utils'
 
 export const orders: Resolver<PaginationArgs> = (
   _,
-  { skip = 0, limit = 10 },
+  args,
   { models: { Order }, authUser: { _id, role } },
 ) => {
   const conditions = role === UserRole.USER ? { user: _id } : {}
 
-  return Order.find(conditions)
-    .skip(skip)
-    .limit(limit)
+  return paginationAndSort(Order.find(conditions), args)
 }
 
 export const order: Resolver<OrderByIdArgs> = (
