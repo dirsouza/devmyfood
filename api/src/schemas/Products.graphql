@@ -28,7 +28,7 @@ input ProductUpdateInput {
 }
 
 type Query {
-  products: [Product!]!
+  products(skip: Int, limit: Int): [Product!]!
   product(_id: ID!): Product!
 }
 

@@ -1,14 +1,22 @@
-import { Resolver, UserRole, OrderByIdArgs, Order } from '../../types'
+import {
+  Resolver,
+  UserRole,
+  OrderByIdArgs,
+  Order,
+  PaginationArgs,
+} from '../../types'
 import { findDocument } from '../../utils'
 
-export const orders: Resolver<{}> = (
+export const orders: Resolver<PaginationArgs> = (
   _,
-  args,
+  { skip = 0, limit = 10 },
   { models: { Order }, authUser: { _id, role } },
 ) => {
   const conditions = role === UserRole.USER ? { user: _id } : {}
 
   return Order.find(conditions)
+    .skip(skip)
+    .limit(limit)
 }
 
 export const order: Resolver<OrderByIdArgs> = (

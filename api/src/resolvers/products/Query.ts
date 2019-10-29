@@ -1,8 +1,14 @@
-import { Resolver, ProductByIdArgs, Product } from '../../types'
+import { Resolver, ProductByIdArgs, Product, PaginationArgs } from '../../types'
 import { findDocument } from '../../utils'
 
-export const products: Resolver<{}> = (_, args, { models }) =>
-  models.Product.find()
+export const products: Resolver<PaginationArgs> = (
+  _,
+  { skip = 0, limit = 10 },
+  { models: { Product } },
+) =>
+  Product.find()
+    .skip(skip)
+    .limit(limit)
 
 export const product: Resolver<ProductByIdArgs> = async (
   _,

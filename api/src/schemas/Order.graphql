@@ -32,7 +32,7 @@ input OrderUpdateInput {
 }
 
 type Query {
-  orders: [Order!]! @auth
+  orders(skip: Int, limit: Int): [Order!]! @auth
   order(_id: ID!): Order! @auth
 }
 
