@@ -3,8 +3,12 @@ import * as ProductQuery from './products/Query'
 import * as ProductMutation from './products/Mutation'
 import * as OrderQuery from './orders/Query'
 import * as OrderMutation from './orders/Mutation'
+import * as OrderNotTrivial from './orders/NotTrivial'
+import * as OrderItemNotTrivial from './ordersItems/NotTrivial'
 
 export default {
   Query: { ...ProductQuery, ...OrderQuery },
   Mutation: { ...ProductMutation, ...UserMutation, ...OrderMutation },
+  Order: { ...OrderNotTrivial },
+  OrderItem: { ...OrderItemNotTrivial },
 }

@@ -5,8 +5,6 @@ import { importSchema } from 'graphql-import'
 import { catchErrorsMiddleware } from './middlewares'
 import { AuthDirective } from './directives'
 
-// console.log(importSchema(`${__dirname}/schemas/Schema.graphql`))
-
 const server = new GraphQLServer({
   typeDefs: importSchema(`${__dirname}/schemas/Schema.graphql`),
   resolvers,

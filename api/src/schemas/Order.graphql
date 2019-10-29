@@ -37,7 +37,7 @@ type Query {
 }
 
 type Mutation {
-  createOrder(data: OrderCreateInput!): Order! @auth
+  createOrder(data: OrderCreateInput): Order! @auth
   updateOrder(_id: ID!, data: OrderUpdateInput!): Order! @auth
   deleteOrder(_id: ID!): Order! @auth
 }
