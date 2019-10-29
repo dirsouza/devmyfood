@@ -1,5 +1,5 @@
 import { Document, Model, Types } from 'mongoose'
-import { CheckExistenceOptions, TokenPayload, OrderItem } from './types'
+import { FindDocumentOptions, TokenPayload, OrderItem } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
 
@@ -12,7 +12,7 @@ export const findDocument = async <T extends Document>({
   message,
   errorCode,
   extensions,
-}: CheckExistenceOptions): Promise<T> => {
+}: FindDocumentOptions): Promise<T> => {
   if (field === '_id' && !isMongoId(value))
     throw new CustomError(`Invalid ID value for ${value}!`, 'INVALID_ID_ERROR')
 
