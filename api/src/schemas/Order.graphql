@@ -31,8 +31,17 @@ input OrderUpdateInput {
   itemsToDelete: [ID!]
 }
 
+enum OrderOrderByInput {
+  total_ASC
+  total_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
 type Query {
-  orders(skip: Int, limit: Int): [Order!]! @auth
+  orders(skip: Int, limit: Int, orderBy: [OrderOrderByInput!]): [Order!]! @auth
   order(_id: ID!): Order! @auth
 }
 

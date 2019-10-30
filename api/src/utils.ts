@@ -68,9 +68,23 @@ export const findOrderItem = (
   return item
 }
 
+export const buildOrderByResolvers = (
+  fields: string[],
+): Record<string, string> =>
+  fields.reduce(
+    (resolvers, field) => ({
+      ...resolvers,
+      [`${field}_ASC`]: field,
+      [`${field}_DESC`]: `-${field}`,
+    }),
+    {},
+  )
+
 export const paginationAndSort = <T extends Document>(
   query: DocumentQuery<T[], T>,
-  { skip = 0, limit = 10 }: PaginationArgs,
-): DocumentQuery<T[], T> => {
-  return query.skip(skip).limit(limit <= 20 ? limit : 20)
-}
+  { skip = 0, limit = 10, orderBy = [] }: PaginationArgs,
+): DocumentQuery<T[], T> =>
+  query
+    .skip(skip)
+    .limit(limit <= 20 ? limit : 20)
+    .sort(orderBy.join(' '))

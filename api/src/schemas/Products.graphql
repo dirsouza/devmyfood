@@ -27,8 +27,17 @@ input ProductUpdateInput {
   unit: Unit
 }
 
+enum ProductOrderByInput {
+  name_ASC
+  name_DESC
+  price_ASC
+  price_DESC
+  unit_ASC
+  unit_DESC
+}
+
 type Query {
-  products(skip: Int, limit: Int): [Product!]!
+  products(skip: Int, limit: Int, orderBy: [ProductOrderByInput!]): [Product!]!
   product(_id: ID!): Product!
 }
 
