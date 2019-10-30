@@ -6,13 +6,14 @@ import {
   OrderDeleteArgs,
   Order,
   OrderUpdateArgs,
+  MutationType,
 } from '../../types'
 import { findDocument, findOrderItem } from '../../utils'
 
 export const createOrder: Resolver<OrderCreateArgs> = async (
   _,
   { data },
-  { models: { Order }, authUser: { _id, role } },
+  { models: { Order }, authUser: { _id, role }, pubsub },
 ) => {
   const user = role === UserRole.USER ? _id : data.user || _id
   const total =
@@ -21,17 +22,24 @@ export const createOrder: Resolver<OrderCreateArgs> = async (
       data.items.reduce((sum, item) => sum + item.total, 0)) ||
     0
 
-  return await new Order({
+  const order = await new Order({
     ...data,
     total,
     user,
   }).save()
+
+  pubsub.publish('ORDER_CREATED', {
+    mutation: MutationType.CREATED,
+    node: order,
+  })
+
+  return order
 }
 
 export const updateOrder: Resolver<OrderUpdateArgs> = async (
   _,
   { _id, data },
-  { models, authUser: { _id: userId, role } },
+  { models, authUser: { _id: userId, role }, pubsub },
 ) => {
   const isAdmin = role === UserRole.ADMIN
   const where = !isAdmin ? { _id, user: userId } : null
@@ -72,19 +80,26 @@ export const updateOrder: Resolver<OrderUpdateArgs> = async (
     order.items.push(itemToAdd)
   })
 
-  return order
+  await order
     .set({
       user,
       status: status || order.status,
       total: order.items.reduce((sum, item) => sum + item.total, 0),
     })
     .save()
+
+  pubsub.publish('ORDER_UPDATED', {
+    mutation: MutationType.UPDATED,
+    node: order,
+  })
+
+  return order
 }
 
 export const deleteOrder: Resolver<OrderDeleteArgs> = async (
   _,
   { _id },
-  { models, authUser: { _id: userId, role } },
+  { models, authUser: { _id: userId, role }, pubsub },
 ) => {
   const where = role === UserRole.USER ? { _id, user: userId } : null
   const order = await findDocument<Order>({
@@ -95,5 +110,12 @@ export const deleteOrder: Resolver<OrderDeleteArgs> = async (
     where,
   })
 
-  return order.remove()
+  await order.remove()
+
+  pubsub.publish('ORDER_DELETED', {
+    mutation: MutationType.DELETED,
+    node: order,
+  })
+
+  return order
 }

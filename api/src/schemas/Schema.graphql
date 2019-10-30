@@ -4,3 +4,4 @@
 # import Query.*, Mutation.* from 'Products.graphql'
 # import Mutation.*, Query.* from 'Order.graphql'
 # import * from 'OrderItem.graphql'
+# import Subscription.* from 'Subscription.graphql'

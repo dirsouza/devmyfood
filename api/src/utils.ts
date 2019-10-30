@@ -4,6 +4,7 @@ import {
   TokenPayload,
   OrderItem,
   PaginationArgs,
+  MutationType,
 } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
@@ -134,3 +135,8 @@ export const paginationAndSort = <T extends Document>(
     .skip(skip)
     .limit(limit <= 20 ? limit : 20)
     .sort(orderBy.join(' '))
+
+export const buildSubscrition = (
+  channel: string,
+  mutations: string[],
+): string[] => mutations.map(m => `${channel.toUpperCase()}_${m}`)

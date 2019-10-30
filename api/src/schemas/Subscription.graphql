@@ -1,0 +1,18 @@
+type OrderSubscrationPayload {
+  mutation: MutationType!
+  node: Order!
+}
+
+input OrderSubscriptionWhereInput {
+  mutationIn: [MutationType!]!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type Subscription {
+  order(where: OrderSubscriptionWhereInput!): OrderSubscrationPayload! @auth
+}
