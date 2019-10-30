@@ -5,14 +5,16 @@ import {
   Order,
   PaginationArgs,
 } from '../../types'
-import { findDocument, paginationAndSort } from '../../utils'
+import { findDocument, paginationAndSort, buildConditions } from '../../utils'
 
 export const orders: Resolver<PaginationArgs> = (
   _,
   args,
   { models: { Order }, authUser: { _id, role } },
 ) => {
-  const conditions = role === UserRole.USER ? { user: _id } : {}
+  let conditions = buildConditions(args.where)
+  conditions =
+    role === UserRole.USER ? { ...conditions, user: _id } : conditions
 
   return paginationAndSort(Order.find(conditions), args)
 }

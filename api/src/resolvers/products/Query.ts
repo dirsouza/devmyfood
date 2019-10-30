@@ -1,11 +1,11 @@
 import { Resolver, ProductByIdArgs, Product, PaginationArgs } from '../../types'
-import { findDocument, paginationAndSort } from '../../utils'
+import { findDocument, paginationAndSort, buildConditions } from '../../utils'
 
 export const products: Resolver<PaginationArgs> = (
   _,
   args,
   { models: { Product } },
-) => paginationAndSort(Product.find(), args)
+) => paginationAndSort(Product.find(buildConditions(args.where)), args)
 
 export const product: Resolver<ProductByIdArgs> = async (
   _,

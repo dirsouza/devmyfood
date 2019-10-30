@@ -54,7 +54,7 @@ export const findOrderItem = (
   if (!isMongoId(_id))
     throw new CustomError(
       `Invalid ID value for '${_id}' in item to '${operation}'!`,
-      'INVALID_ID_VALUE_ERROR',
+      'INVALID_ID_ERROR',
     )
 
   const item = items.id(_id)
@@ -79,6 +79,52 @@ export const buildOrderByResolvers = (
     }),
     {},
   )
+
+const operatiors = [
+  { name: 'Eq', op: '$eq' },
+  { name: 'Ne', op: '$ne' },
+  { name: 'Lt', op: '$lt' },
+  { name: 'Lte', op: '$lte' },
+  { name: 'Gt', op: '$gt' },
+  { name: 'Gte', op: '$gte' },
+  { name: 'In', op: '$in' },
+  { name: 'Nin', op: '$nin' },
+  { name: 'Regex', op: '$regex' },
+  { name: 'Options', op: '$options' },
+]
+
+const idFields = ['user']
+
+export const buildConditions = (
+  where: Record<string, any> = {},
+): Record<string, any> =>
+  Object.keys(where).reduce((conditions, whereKey) => {
+    if (idFields.some(idField => whereKey.includes(idField))) {
+      const ids: string[] = Array.isArray(where[whereKey])
+        ? where[whereKey]
+        : [where[whereKey]]
+
+      if (ids.some(id => !isMongoId(id)))
+        throw new CustomError(
+          `Invalid ID value for condition '${whereKey}'!`,
+          'INVALID_ID_ERROR',
+        )
+    }
+
+    const operator = operatiors.find(({ name }) =>
+      new RegExp(`${name}$`).test(whereKey),
+    )
+
+    const fieldName = operator
+      ? whereKey.replace(operator.name, '')
+      : `$${whereKey.toLowerCase()}`
+
+    const fieldValue = operator
+      ? { ...conditions[fieldName], [operator.op]: where[whereKey] }
+      : where[whereKey].map(buildConditions)
+
+    return { ...conditions, [fieldName]: fieldValue }
+  }, {})
 
 export const paginationAndSort = <T extends Document>(
   query: DocumentQuery<T[], T>,
