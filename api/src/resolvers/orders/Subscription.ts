@@ -1,26 +1,24 @@
 import { withFilter } from 'graphql-yoga'
-import { Types } from 'mongoose'
 import {
   Order,
   Resolver,
   SubscriptionResolver,
   SubscriptionArgs,
   SubscriptionPayload,
-  UserRole,
 } from '../../types'
-import { buildSubscrition } from '../../utils'
+import { buildSubscribeFn, buildFilterFn } from '../../utils'
 
 const orderSubscribeFn: Resolver<SubscriptionArgs> = (
   _,
   { where: { mutationIn } },
   { pubsub },
-) => pubsub.asyncIterator(buildSubscrition('ORDER', mutationIn))
+) => buildSubscribeFn(mutationIn, 'ORDER', pubsub)
 
 const orderFilterFn: Resolver<SubscriptionArgs, SubscriptionPayload<Order>> = (
   { node: { user } },
   args,
-  { authUser: { _id, role } },
-) => (role === UserRole.ADMIN ? true : (user as Types.ObjectId).equals(_id))
+  { authUser },
+) => buildFilterFn(user, authUser)
 
 export const order: SubscriptionResolver<Order> = {
   subscribe: withFilter(orderSubscribeFn, orderFilterFn),

@@ -8,7 +8,7 @@ import {
   OrderUpdateArgs,
   MutationType,
 } from '../../types'
-import { findDocument, findOrderItem } from '../../utils'
+import { findDocument, findOrderItem, buildPublishSubscribe } from '../../utils'
 
 export const createOrder: Resolver<OrderCreateArgs> = async (
   _,
@@ -28,10 +28,7 @@ export const createOrder: Resolver<OrderCreateArgs> = async (
     user,
   }).save()
 
-  pubsub.publish('ORDER_CREATED', {
-    mutation: MutationType.CREATED,
-    node: order,
-  })
+  buildPublishSubscribe(pubsub, 'ORDER_CREATED', MutationType.CREATED, order)
 
   return order
 }
@@ -88,10 +85,7 @@ export const updateOrder: Resolver<OrderUpdateArgs> = async (
     })
     .save()
 
-  pubsub.publish('ORDER_UPDATED', {
-    mutation: MutationType.UPDATED,
-    node: order,
-  })
+  buildPublishSubscribe(pubsub, 'ORDER_UPDATED', MutationType.UPDATED, order)
 
   return order
 }
@@ -112,10 +106,7 @@ export const deleteOrder: Resolver<OrderDeleteArgs> = async (
 
   await order.remove()
 
-  pubsub.publish('ORDER_DELETED', {
-    mutation: MutationType.DELETED,
-    node: order,
-  })
+  buildPublishSubscribe(pubsub, 'ORDER_DELETED', MutationType.DELETED, order)
 
   return order
 }

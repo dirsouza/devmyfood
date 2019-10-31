@@ -4,10 +4,14 @@ import {
   TokenPayload,
   OrderItem,
   PaginationArgs,
+  AuthUser,
+  User,
+  UserRole,
   MutationType,
 } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
+import { PubSub } from 'graphql-yoga'
 
 export const findDocument = async <T extends Document>({
   model,
@@ -140,3 +144,25 @@ export const buildSubscrition = (
   channel: string,
   mutations: string[],
 ): string[] => mutations.map(m => `${channel.toUpperCase()}_${m}`)
+
+export const buildPublishSubscribe = (
+  pupsub: PubSub,
+  channel: string,
+  mutation: MutationType,
+  node: Document,
+) =>
+  pupsub.publish(channel, {
+    mutation,
+    node,
+  })
+
+export const buildSubscribeFn = (
+  mutationIn: string[],
+  channel: string,
+  pubsub: PubSub,
+) => pubsub.asyncIterator(buildSubscrition(channel, mutationIn))
+
+export const buildFilterFn = (
+  user: User | Types.ObjectId,
+  { _id, role }: AuthUser,
+) => (role === UserRole.ADMIN ? true : (user as Types.ObjectId).equals(_id))
