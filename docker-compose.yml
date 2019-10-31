@@ -9,6 +9,8 @@ services:
     environment:
       MONGO_URI:
       JWT_SECRET:
+      REDIS_HOST:
+      REDIS_PORT:
   mongo:
     container_name: mongo
     image: mongo:4
@@ -19,3 +21,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME:
       MONGO_INITDB_ROOT_PASSWORD:
+
+  redis_app:
+    container_name: redis_app
+    image: redis:5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.docker/redis/data:/data

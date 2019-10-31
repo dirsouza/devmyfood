@@ -19,3 +19,13 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
       ME_CONFIG_MONGODB_SERVER: "mongo"
+  redis-commander:
+    container_name: redis-commander
+    image: rediscommander/redis-commander:latest
+    ports:
+      - "8083:8081"
+    depends_on:
+      - redis_app
+    environment:
+      REDIS_HOST:
+      REDIS_PORT:

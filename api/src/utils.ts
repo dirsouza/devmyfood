@@ -11,7 +11,7 @@ import {
 } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
-import { PubSub } from 'graphql-yoga'
+import { RedisPubSub } from 'graphql-redis-subscriptions'
 
 export const findDocument = async <T extends Document>({
   model,
@@ -146,7 +146,7 @@ export const buildSubscrition = (
 ): string[] => mutations.map(m => `${channel.toUpperCase()}_${m}`)
 
 export const buildPublishSubscribe = (
-  pupsub: PubSub,
+  pupsub: RedisPubSub,
   channel: string,
   mutation: MutationType,
   node: Document,
@@ -159,10 +159,10 @@ export const buildPublishSubscribe = (
 export const buildSubscribeFn = (
   mutationIn: string[],
   channel: string,
-  pubsub: PubSub,
+  pubsub: RedisPubSub,
 ) => pubsub.asyncIterator(buildSubscrition(channel, mutationIn))
 
 export const buildFilterFn = (
   user: User | Types.ObjectId,
   { _id, role }: AuthUser,
-) => (role === UserRole.ADMIN ? true : (user as Types.ObjectId).equals(_id))
+) => (role === UserRole.ADMIN ? true : user === _id)
