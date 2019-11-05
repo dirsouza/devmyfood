@@ -8,10 +8,13 @@ import {
   User,
   UserRole,
   MutationType,
+  GetFieldsOptions,
 } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
+import { GraphQLResolveInfo } from 'graphql'
+import { fieldsList } from 'graphql-fields-list'
 
 export const findDocument = async <T extends Document>({
   model,
@@ -22,12 +25,14 @@ export const findDocument = async <T extends Document>({
   message,
   errorCode,
   extensions,
+  select,
 }: FindDocumentOptions): Promise<T> => {
   if (field === '_id' && !isMongoId(value))
     throw new CustomError(`Invalid ID value for ${value}!`, 'INVALID_ID_ERROR')
 
   const document = await ((models[model] as unknown) as Model<T>)
     .findOne(where || { [field]: value })
+    .select(select)
     .exec()
 
   if (!document)
@@ -166,3 +171,17 @@ export const buildFilterFn = (
   user: User | Types.ObjectId,
   { _id, role }: AuthUser,
 ) => (role === UserRole.ADMIN ? true : user === _id)
+
+export const getFields = (
+  info: GraphQLResolveInfo,
+  options?: GetFieldsOptions,
+): string => {
+  let fields = fieldsList(info)
+
+  if (options) {
+    const { include = [], skip = [] } = options
+    fields = fields.concat(include).filter(f => !skip.includes(f))
+  }
+
+  return fields.join(' ')
+}

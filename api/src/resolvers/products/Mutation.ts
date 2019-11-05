@@ -5,7 +5,7 @@ import {
   ProductByIdArgs,
   Product,
 } from '../../types'
-import { findDocument } from '../../utils'
+import { findDocument, getFields } from '../../utils'
 
 export const createProduct: Resolver<ProductCreateArgs> = (
   _,
@@ -20,12 +20,14 @@ export const updateProduct: Resolver<ProductUpdateArgs> = async (
   _,
   { _id, data },
   { models },
+  info,
 ) => {
   const product = await findDocument<Product>({
     model: 'Product',
     models,
     field: '_id',
     value: _id,
+    select: getFields(info),
   })
 
   Object.keys(data).forEach(prop => (product[prop] = data[prop]))
@@ -36,12 +38,14 @@ export const deleteProduct: Resolver<ProductByIdArgs> = async (
   _,
   { _id },
   { models },
+  info,
 ) => {
   const product = await findDocument<Product>({
     model: 'Product',
     models,
     field: '_id',
     value: _id,
+    select: getFields(info),
   })
 
   return product.remove()

@@ -1,5 +1,5 @@
 MONGO_INITDB_ROOT_USERNAME=
 MONGO_INITDB_ROOT_PASSWORD=
-MONGO_URI=mongodb://user:pass@mongo:27017/db?authSource=admin
+MONGO_URI=mongodb://root:root@mongo:27017/myfood?authSource=admin
 
-JWT_SECRET=
+JWT_SECRET=iRgef*jA6^R5

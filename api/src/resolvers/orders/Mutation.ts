@@ -8,7 +8,12 @@ import {
   OrderUpdateArgs,
   MutationType,
 } from '../../types'
-import { findDocument, findOrderItem, buildPublishSubscribe } from '../../utils'
+import {
+  findDocument,
+  findOrderItem,
+  buildPublishSubscribe,
+  getFields,
+} from '../../utils'
 
 export const createOrder: Resolver<OrderCreateArgs> = async (
   _,
@@ -37,6 +42,7 @@ export const updateOrder: Resolver<OrderUpdateArgs> = async (
   _,
   { _id, data },
   { models, authUser: { _id: userId, role }, pubsub },
+  info,
 ) => {
   const isAdmin = role === UserRole.ADMIN
   const where = !isAdmin ? { _id, user: userId } : null
@@ -46,6 +52,7 @@ export const updateOrder: Resolver<OrderUpdateArgs> = async (
     field: '_id',
     value: _id,
     where,
+    select: getFields(info, { include: ['user', 'items', 'status'] }),
   })
   const user = !isAdmin ? userId : data.user || order.user
   const {
@@ -94,6 +101,7 @@ export const deleteOrder: Resolver<OrderDeleteArgs> = async (
   _,
   { _id },
   { models, authUser: { _id: userId, role }, pubsub },
+  info,
 ) => {
   const where = role === UserRole.USER ? { _id, user: userId } : null
   const order = await findDocument<Order>({
@@ -102,6 +110,7 @@ export const deleteOrder: Resolver<OrderDeleteArgs> = async (
     field: '_id',
     value: _id,
     where,
+    select: getFields(info, { include: ['user'] }),
   })
 
   await order.remove()
