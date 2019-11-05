@@ -9,6 +9,7 @@ import {
   UserRole,
   MutationType,
   GetFieldsOptions,
+  DataLoaderParams,
 } from './types'
 import { CustomError } from './errors'
 import { SignOptions, sign } from 'jsonwebtoken'
@@ -184,4 +185,27 @@ export const getFields = (
   }
 
   return fields.join(' ')
+}
+
+export const batchLoadFn = async (
+  model: Model<Document>,
+  params: DataLoaderParams[],
+): Promise<Document[]> => {
+  const ids = params.map(param => param.key)
+  const { select } = params[0]
+
+  const documents = await model
+    .find({ _id: { $in: ids } })
+    .select(select)
+    .exec()
+
+  const documentsMap = documents.reduce(
+    (prev, document) => ({
+      ...prev,
+      [document._id.toHexString()]: document,
+    }),
+    {} as { [key: string]: Document },
+  )
+
+  return ids.map(id => documentsMap[id.toHexString()])
 }
